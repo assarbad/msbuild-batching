@@ -1,0 +1,8 @@
+**.log
+.vs/
+*.sln.metaproj*
+*.user
+project/x64/
+msbuild-batching.dbg/
+sccache/
+x64/

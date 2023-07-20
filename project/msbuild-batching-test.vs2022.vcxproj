@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DC4E0CDB-05FE-BBA0-D035-5C8FA2B74313}</ProjectGuid>
+    <RootNamespace>msbuild-batching-test</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectName>msbuild-batching-test</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)project.props" Condition="exists('$(SolutionDir)project.props')" Label="ProjectSpecific (solution)" />
+    <Import Project="$(ProjectDir)project.props" Condition="exists('$(ProjectDir)project.props') AND '$(SolutionDir)' != '$(ProjectDir)'" Label="Project-specific (local)" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level4</WarningLevel>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <WarningLevel>Level4</WarningLevel>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>WIN32;_CONSOLE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file10.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file11.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file12.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file13.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file14.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file15.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file16.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file17.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file18.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file19.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="a\x\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file10.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file11.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file12.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file13.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file14.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file15.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file16.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file17.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file18.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file19.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="a\y\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="a\z\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="b\x\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="b\y\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file20.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file21.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file22.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file23.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file24.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file25.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file26.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file27.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file28.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file29.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="b\z\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="c\x\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="c\y\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file0.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file1.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file10.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file11.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file12.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file13.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file14.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file15.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file16.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file17.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file18.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file19.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file2.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file20.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file21.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file22.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file23.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file24.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file25.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file26.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file27.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file28.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file29.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file3.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file30.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file31.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file32.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file33.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file34.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file35.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file36.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file37.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file38.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file39.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file4.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file40.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file41.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file42.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file43.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file44.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file45.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file46.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file47.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file48.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file49.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file5.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file50.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file51.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file52.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file53.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file54.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file55.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file56.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file57.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file58.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file59.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file6.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file60.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file61.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file62.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file63.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file64.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file65.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file66.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file67.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file68.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file69.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file7.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file70.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file71.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file72.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file73.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file74.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file75.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file76.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file77.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file78.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file79.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file8.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file80.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file81.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file82.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file83.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file84.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file85.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file86.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file87.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file88.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file89.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file9.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file90.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file91.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file92.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file93.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file94.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file95.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file96.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file97.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file98.cpp">
+    </ClCompile>
+    <ClCompile Include="c\z\file99.cpp">
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\build.cmd" />
+    <None Include="..\premake4.lua" />
+    <None Include="..\.editorconfig" />
+    <None Include="..\.clang-format" />
+    <None Include="..\.gitignore" />
+    <None Include="..\.hgignore" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

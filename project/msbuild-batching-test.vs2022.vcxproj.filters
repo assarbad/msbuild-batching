@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Special Files">
+      <UniqueIdentifier>{17B88C31-1441-D6CC-CA01-788D15CA9700}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{FE4D63A2-A1EF-FC07-ECA0-4BCF2FF42F78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="a">
+      <UniqueIdentifier>{E2086195-AA7C-DA4A-4345-CD3ED482ABD3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="a\x">
+      <UniqueIdentifier>{BC575D72-C33C-0AD4-7BB0-ADC55FDA3D91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="a\y">
+      <UniqueIdentifier>{56158398-0E58-32F7-782F-37173A281230}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="a\z">
+      <UniqueIdentifier>{2879F68D-8B11-7255-6FB8-139C393B6FA2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="b">
+      <UniqueIdentifier>{12A7B9F7-E331-67F4-E8E0-F3B33961F6F3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="b\x">
+      <UniqueIdentifier>{C0C47706-EEC2-F432-CAAE-7FDFC252FFEA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="b\y">
+      <UniqueIdentifier>{A07FECC0-2334-2FA5-8984-6D01768F8F18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="b\z">
+      <UniqueIdentifier>{08029582-AF18-31C4-E32E-3F8A0C99DD8D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c">
+      <UniqueIdentifier>{730D5AF3-5C5D-ABDC-BC69-73E360A67434}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c\x">
+      <UniqueIdentifier>{95BB2F75-C92B-2334-B46E-6EE08E30A3FB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c\y">
+      <UniqueIdentifier>{4B2D7E02-428C-6E97-A620-978930358DCA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="c\z">
+      <UniqueIdentifier>{9E1668F1-9F31-0F76-8E2A-E7D11ED0133A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\build.cmd">
+      <Filter>Special Files</Filter>
+    </None>
+    <None Include="..\premake4.lua">
+      <Filter>Special Files</Filter>
+    </None>
+    <None Include="..\.editorconfig" />
+    <None Include="..\.clang-format" />
+    <None Include="..\.gitignore">
+      <Filter>Special Files</Filter>
+    </None>
+    <None Include="..\.hgignore">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="a\x\file0.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file1.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file10.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file11.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file12.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file13.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file14.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file15.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file16.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file17.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file18.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file19.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file2.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file3.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file4.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file5.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file6.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file7.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file8.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\x\file9.cpp">
+      <Filter>a\x</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file0.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file1.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file10.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file11.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file12.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file13.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file14.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file15.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file16.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file17.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file18.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file19.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file2.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file3.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file4.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file5.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file6.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file7.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file8.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\y\file9.cpp">
+      <Filter>a\y</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file0.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file1.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file2.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file3.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file4.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file5.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file6.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file7.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file8.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="a\z\file9.cpp">
+      <Filter>a\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file0.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file1.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file2.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file3.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file4.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file5.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file6.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file7.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file8.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\x\file9.cpp">
+      <Filter>b\x</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file0.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file1.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file2.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file3.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file4.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file5.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file6.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file7.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file8.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\y\file9.cpp">
+      <Filter>b\y</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file0.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file1.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file2.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file20.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file21.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file22.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file23.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file24.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file25.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file26.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file27.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file28.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file29.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file3.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file4.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file5.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file6.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file7.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file8.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="b\z\file9.cpp">
+      <Filter>b\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file0.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file1.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file2.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file3.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file4.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file5.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file6.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file7.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file8.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\x\file9.cpp">
+      <Filter>c\x</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file0.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file1.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file2.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file3.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file4.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file5.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file6.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file7.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file8.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\y\file9.cpp">
+      <Filter>c\y</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file0.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file1.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file10.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file11.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file12.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file13.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file14.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file15.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file16.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file17.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file18.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file19.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file2.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file20.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file21.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file22.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file23.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file24.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file25.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file26.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file27.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file28.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file29.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file3.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file30.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file31.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file32.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file33.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file34.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file35.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file36.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file37.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file38.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file39.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file4.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file40.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file41.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file42.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file43.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file44.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file45.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file46.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file47.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file48.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file49.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file5.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file50.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file51.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file52.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file53.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file54.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file55.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file56.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file57.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file58.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file59.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file6.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file60.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file61.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file62.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file63.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file64.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file65.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file66.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file67.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file68.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file69.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file7.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file70.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file71.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file72.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file73.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file74.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file75.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file76.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file77.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file78.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file79.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file8.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file80.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file81.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file82.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file83.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file84.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file85.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file86.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file87.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file88.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file89.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file9.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file90.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file91.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file92.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file93.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file94.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file95.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file96.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file97.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file98.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+    <ClCompile Include="c\z\file99.cpp">
+      <Filter>c\z</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
