@@ -12,20 +12,20 @@
 	</Target>
 	<Target Name="FindSccacheExecutableInPath">
 		<PropertyGroup>
-			<ExecutableToFind>sccache.exe</ExecutableToFind>
+			<_SccacheExecutableToFind>sccache.exe</_SccacheExecutableToFind>
 		</PropertyGroup>
 		<ItemGroup>
-			<ExecPaths Include="$([System.Environment]::GetEnvironmentVariable('PATH').Split(';'))" />
-			<FilteredExecPaths Include="@(ExecPaths)" Condition="exists('%(FullPath)\$(ExecutableToFind)')" />
-			<FilteredExecPaths Include="@(FilteredExecPaths->Reverse())" Condition="exists('%(FullPath)\$(ExecutableToFind)')" />
+			<_SccacheExecPaths Include="$([System.Environment]::GetEnvironmentVariable('PATH').Split(';'))" />
+			<_SccacheFilteredExecPaths Include="@(_SccacheExecPaths)" Condition="Exists('%(FullPath)\$(_SccacheExecutableToFind)')" />
+			<_SccacheFilteredExecPaths Include="@(_SccacheFilteredExecPaths->Reverse())" Condition="Exists('%(FullPath)\$(_SccacheExecutableToFind)')" />
 		</ItemGroup>
 		<PropertyGroup>
-			<SccacheExecutableFullPath Condition="'%(FilteredExecPaths.Identity)' != ''">%(FilteredExecPaths.Identity)\$(ExecutableToFind)</SccacheExecutableFullPath>
-			<SccacheExecutableFullPath Condition="'%(FilteredExecPaths.Identity)' == ''"></SccacheExecutableFullPath>
+			<SccacheExecutableFullPath Condition="'%(_SccacheFilteredExecPaths.Identity)' != ''">%(_SccacheFilteredExecPaths.Identity)\$(_SccacheExecutableToFind)</SccacheExecutableFullPath>
+			<SccacheExecutableFullPath Condition="'%(_SccacheFilteredExecPaths.Identity)' == ''"></SccacheExecutableFullPath>
 		</PropertyGroup>
 	</Target>
 	<Target Name="DetectSccacheVersion" DependsOnTargets="FindSccacheExecutableInPath">
-		<Exec Command="&quot;$(SccacheExecutableFullPath)&quot; --version" EchoOff="true" ConsoleToMsBuild="true">
+		<Exec Command="&quot;$(SccacheExecutableFullPath)&quot; --version" EchoOff="true" Condition="'$(SccacheExecutableFullPath)' != ''" ConsoleToMsBuild="true">
 			<Output TaskParameter="ConsoleOutput" PropertyName="SccacheVersion" />
 		</Exec>
 		<Message Importance="high" Text="sccache version = '$(SccacheVersion)'" />
@@ -67,4 +67,7 @@
 			<Targets>ClVersionRetrieve</Targets>
 		</ProjectReference>
 	</ItemGroup>
+	<ImportGroup>
+		<Import Project="$(MSBuildThisFileDirectory)GitRevision.targets" />
+	</ImportGroup>
 </Project>

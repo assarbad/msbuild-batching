@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project InitialTargets="GetGitRevision" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="FindGitExecutablePath" Condition="Exists('$(MSBuildThisFileDirectory).git\HEAD')">
+		<PropertyGroup>
+			<_GitExecutableToFind>git.exe</_GitExecutableToFind>
+		</PropertyGroup>
+		<ItemGroup>
+			<_GitExecPaths Include="$([System.Environment]::GetEnvironmentVariable('PATH').Split(';'))" />
+			<_GitFilteredExecPaths Include="@(_GitExecPaths)" Condition="Exists('%(FullPath)\$(_GitExecutableToFind)')" />
+			<_GitFilteredExecPaths Include="@(_GitFilteredExecPaths->Reverse())" Condition="Exists('%(FullPath)\$(_GitExecutableToFind)')" />
+		</ItemGroup>
+		<PropertyGroup>
+			<GitExecutableFullPath Condition="'%(_GitFilteredExecPaths.Identity)' != ''">%(_GitFilteredExecPaths.Identity)\$(_GitExecutableToFind)</GitExecutableFullPath>
+			<GitExecutableFullPath Condition="'%(_GitFilteredExecPaths.Identity)' == ''"></GitExecutableFullPath>
+		</PropertyGroup>
+	</Target>
+	<Target Name="GetGitRevision" DependsOnTargets="FindGitExecutablePath" Condition="Exists('$(MSBuildThisFileDirectory).git\HEAD')">
+		<Message Importance="high" Text="Detecting Git revision, since '.git/HEADS' was found. Using %24(GitExecutableFullPath) = '$(GitExecutableFullPath)'." Condition="'$(GitExecutableFullPath)' != ''" />
+		<Exec Command="&quot;$(GitExecutableFullPath)&quot; -C &quot;$(MSBuildThisFileDirectory)\&quot; rev-parse HEAD" EchoOff="true" Condition="'$(GitExecutableFullPath)' != ''" ConsoleToMsBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="GitRevision" />
+		</Exec>
+		<Message Importance="high" Text="Retrieved for HEAD %24(GitRevision) = '$(GitRevision)'." Condition="'$(GitRevision)' != ''" />
+	</Target>
+</Project>
