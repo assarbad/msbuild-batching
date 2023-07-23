@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project InitialTargets="GetGitRevision" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Target Name="FindGitExecutablePath" Condition="Exists('$(MSBuildThisFileDirectory).git\HEAD')">
+	<PropertyGroup>
+		<GitWorkTreeRootDir>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), '.git\HEAD'))</GitWorkTreeRootDir>
+		<GitWorkTreeRootDir Condition="'$(GitWorkTreeRootDir)' != '' and !HasTrailingSlash('$(GitWorkTreeRootDir)')">$(GitWorkTreeRootDir)\</GitWorkTreeRootDir>
+		<GitDirSentinelFile Condition="Exists('$(GitWorkTreeRootDir).git\HEAD')">$(GitWorkTreeRootDir).git\HEAD</GitDirSentinelFile>
+	</PropertyGroup>
+	<Target Name="FindGitExecutablePath" Condition="'$(GitDirSentinelFile)' != ''">
 		<PropertyGroup>
 			<_GitExecutableToFind>git.exe</_GitExecutableToFind>
 		</PropertyGroup>
@@ -14,11 +19,19 @@
 			<GitExecutableFullPath Condition="'%(_GitFilteredExecPaths.Identity)' == ''"></GitExecutableFullPath>
 		</PropertyGroup>
 	</Target>
-	<Target Name="GetGitRevision" DependsOnTargets="FindGitExecutablePath" Condition="Exists('$(MSBuildThisFileDirectory).git\HEAD')">
-		<Message Importance="high" Text="Detecting Git revision, since '.git/HEADS' was found. Using %24(GitExecutableFullPath) = '$(GitExecutableFullPath)'." Condition="'$(GitExecutableFullPath)' != ''" />
-		<Exec Command="&quot;$(GitExecutableFullPath)&quot; -C &quot;$(MSBuildThisFileDirectory)\&quot; rev-parse HEAD" EchoOff="true" Condition="'$(GitExecutableFullPath)' != ''" ConsoleToMsBuild="true">
+	<Target Name="GetGitRevision" DependsOnTargets="FindGitExecutablePath" Condition="'$(GitDirSentinelFile)' != ''">
+		<Message Importance="high" Text="Detecting Git revision, since '$(GitDirSentinelFile)' was found. Using %24(GitExecutableFullPath) = '$(GitExecutableFullPath)'." Condition="'$(GitExecutableFullPath)' != '' and '$(GitWorkTreeRootDir)' != ''" />
+		<Exec Command="&quot;$(GitExecutableFullPath)&quot; -C &quot;$(GitWorkTreeRootDir)\&quot; rev-parse HEAD" EchoOff="true" Condition="'$(GitExecutableFullPath)' != '' and '$(GitWorkTreeRootDir)' != ''" ConsoleToMsBuild="true">
 			<Output TaskParameter="ConsoleOutput" PropertyName="GitRevision" />
 		</Exec>
 		<Message Importance="high" Text="Retrieved for HEAD %24(GitRevision) = '$(GitRevision)'." Condition="'$(GitRevision)' != ''" />
+		<ItemGroup Condition="'$(GitRevision)' != ''">
+			<ClCompile>
+				<PreprocessorDefinitions>GIT_COMMIT="$(GitRevision)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			</ClCompile>
+			<ResourceCompile>
+				<PreprocessorDefinitions>GIT_COMMIT="$(GitRevision)";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			</ResourceCompile>
+		</ItemGroup>
 	</Target>
 </Project>
