@@ -60,4 +60,11 @@
 		<Message Importance="high" Text="%24(CompileCacheWrapperBinDir) = '$(CompileCacheWrapperBinDir)'" />
 		<Message Importance="high" Text="%24(SccacheExecutableFullPath) = '$(SccacheExecutableFullPath)'" />
 	</Target>
+	<ItemGroup>
+		<ProjectReference Include="$(MSBuildThisFileDirectory)ClVersionRetrieve.proj">
+			<Name>ClVersionRetrieve</Name>
+			<Project>{0b457127-9b6f-490a-b9e5-7815e9c8fc32}</Project>
+			<Targets>ClVersionRetrieve</Targets>
+		</ProjectReference>
+	</ItemGroup>
 </Project>

@@ -6,3 +6,5 @@ project/x64/
 msbuild-batching.dbg/
 sccache/
 x64/
+Debug/
+Release/

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="ClVersionRetrieve" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<!-- This is a severely stripped down "C++" project, which has but one purpose: retrieve the version of cl.exe -->
+	<ItemGroup Label="ProjectConfigurations">
+		<!-- We NEED the project configuration|platform pairs defined, otherwise Microsoft.CppBuild.targets issues an error MSB8013 -->
+		<ProjectConfiguration Include="Release|Win32">
+			<Configuration>Release</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Release|x64">
+			<Configuration>Release</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Debug|Win32">
+			<Configuration>Debug</Configuration>
+			<Platform>Win32</Platform>
+		</ProjectConfiguration>
+		<ProjectConfiguration Include="Debug|x64">
+			<Configuration>Debug</Configuration>
+			<Platform>x64</Platform>
+		</ProjectConfiguration>
+	</ItemGroup>
+	<PropertyGroup Label="Globals">
+		<Keyword>Win32Proj</Keyword>
+		<ProjectGuid>{0b457127-9b6f-490a-b9e5-7815e9c8fc32}</ProjectGuid>
+		<WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+	<PropertyGroup>
+		<PlatformToolset Condition="'$(PlatformToolset)' == '' or '$(PlatformToolset)' == '$(LegacyPlatformToolset)'">$(DefaultPlatformToolset)</PlatformToolset>
+		<ConfigurationType>DynamicLibrary</ConfigurationType>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+	<ItemGroup>
+		<ClCompile Include="NonExistent.cpp" />
+	</ItemGroup>
+	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	<Target Name="ClVersionRetrieve" BeforeTargets="ClCompile" DependsOnTargets="SelectClCompile">
+		<!-- NB: below we join stderr into stdout, such that we have a deterministic ordering of output lines! -->
+		<Exec Command="&quot;$(ClCompilerPath)&quot; 2&gt;&amp;1 | findstr /b /l &quot;Microsoft (R) C/C++ Optimizing Compiler Version&quot;" IgnoreExitCode="true" EchoOff="true" ConsoleToMsBuild="true">
+			<Output TaskParameter="ConsoleOutput" PropertyName="ClCompilerVersionLine" />
+		</Exec>
+		<PropertyGroup>
+			<ClCompilerVersion Condition="'$(ClCompilerVersionLine)' != ''">$([System.Text.RegularExpressions.Regex]::Replace('$(ClCompilerVersionLine)', '^Microsoft.+?[Cc]ompiler [Vv]ersion (\d+(?:\.\d+)+).*', '%241'))</ClCompilerVersion>
+		</PropertyGroup>
+		<Message Importance="high" Text="%24(ClCompilerPath) = '$(ClCompilerPath)'" />
+		<Message Importance="high" Text="%24(ClCompilerVersionLine) = '$(ClCompilerVersionLine)'" />
+		<Message Importance="high" Text="%24(ClCompilerVersion) = '$(ClCompilerVersion)'" />
+		<Message Importance="high" Text="%24(MSBuildFileVersion) = '$(MSBuildFileVersion)'" />
+		<Message Importance="high" Text="%24(MSBuildSemanticVersion) = '$(MSBuildSemanticVersion)'" />
+		<Message Importance="high" Text="%24(MSBuildVersion) = '$(MSBuildVersion)'" />
+		<Message Importance="high" Text="%24(MSBuildToolsVersion) = '$(MSBuildToolsVersion)'" />
+		<!-- At this point we could write the results into a file, e.g. an MSBuild snippet -->
+	</Target>
+</Project>
