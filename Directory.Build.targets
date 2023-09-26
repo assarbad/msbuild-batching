@@ -69,5 +69,6 @@
 	</ItemGroup>
 	<ImportGroup>
 		<Import Project="$(MSBuildThisFileDirectory)GitRevision.targets" />
+		<Import Project="$(MSBuildThisFileDirectory)Duplicate.targets" />
 	</ImportGroup>
 </Project>

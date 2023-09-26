@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="MyWarnCompileDuplicatedFilename" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Target Name="MyWarnCompileDuplicatedFilename" BeforeTargets="WarnCompileDuplicatedFilename">
+		<!--VCMessage Code="MSB8027" Type="Warning" Arguments="%(Filename)%(Extension);@(ClCompile, ', ')" Condition="'%(ClCompile.ExcludedFromBuild)' != 'true' and '%(Filename)%(Extension)' != '@(ClCompile->'%(Filename)%(Extension)')' and '%(ObjectFileName)' == '@(ClCompile->Metadata(ObjectFileName)->Distinct())'" /-->
+		<Message Importance="high" Text="@(ClCompile->Metadata(ObjectFileName))" Condition="'%(ClCompile.ExcludedFromBuild)' != 'true'" />
+	</Target>
+</Project>
