@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project InitialTargets="GetGitRevision" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
-		<GitWorkTreeRootDir>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), '.git\HEAD'))</GitWorkTreeRootDir>
+<GitWorkTreeRootDir>$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), '.git\refs\heads\main'))</GitWorkTreeRootDir>
+		<GitWorkTreeRootDir Condition="'$(GitWorkTreeRootDir)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), '.git\refs\heads\master'))</GitWorkTreeRootDir>
 		<GitWorkTreeRootDir Condition="'$(GitWorkTreeRootDir)' != '' and !HasTrailingSlash('$(GitWorkTreeRootDir)')">$(GitWorkTreeRootDir)\</GitWorkTreeRootDir>
 		<GitDirSentinelFile Condition="Exists('$(GitWorkTreeRootDir).git\HEAD')">$(GitWorkTreeRootDir).git\HEAD</GitDirSentinelFile>
 	</PropertyGroup>

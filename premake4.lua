@@ -9,6 +9,8 @@
           https://github.com/windirstat/premake-stable
           https://sourceforge.net/projects/windirstat/files/premake-stable/
           https://osdn.net/projects/windirstat/storage/historical/premake-stable/
+
+// SPDX-License-Identifier: Unlicense
   ]]
 local action = _ACTION or ""
 local name = "msbuild-batching-test"
@@ -73,33 +75,38 @@ do
         ['<EnableCOMDATFolding>true</EnableCOMDATFolding>'] = 0,
         ['<OutputFile>$(OutDir)%s</OutputFile>'] = 0,
         ['<AdditionalLibraryDirectories>%s;%%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>'] = 0,
+        ['<WarningLevel>Level3</WarningLevel>'] = 0,
         ['<SmallerTypeCheck>true</SmallerTypeCheck>'] = 0,
+        ['<ImportLibrary>%s</ImportLibrary>'] = 0,
     }
-
-    function inject_linkopt_files(orig_p, toadd, indent, msg, first, ...)
-        orig_p(indent, "</ClCompile>") -- close original element
-
-        orig_p(indent, [[<ClCompile Include="%s">]], [[$(VCToolsInstallDir)\crt\src\linkopts\noarg.cpp]])
-        orig_p(indent+1, toadd)
-        orig_p(indent, "</ClCompile>")
-
-        orig_p(indent, [[<ClCompile Include="%s">]], [[$(VCToolsInstallDir)\crt\src\linkopts\setargv.cpp]])
-        orig_p(indent+1, toadd)
-        orig_p(indent, "</ClCompile>")
-
-        orig_p(indent, [[<ClCompile Include="%s">]], [[$(VCToolsInstallDir)\crt\src\linkopts\wsetargv.cpp]])
-        -- don't add filter here, will be done by the caller: orig_p(indent+1, toadd)
-        -- don't close _here_ ...
-    end
     -- Embed the property sheet
+    previousmsg = nil
     _G.override_vcxproj = function(prj, orig_p, indent, msg, first, ...)
+        oldpreviousmsg = previousmsg
+        previousmsg = msg
         if indent == 1 then
             if msg == [[<ImportGroup Label="ExtensionSettings">]] then
                 orig_p(indent, msg, first, ...) -- pass through original line
                 orig_p(indent, [[</ImportGroup>]])
                 orig_p(indent, [[<ImportGroup Label="PropertySheets">]])
-                orig_p(indent+1, [[<Import Project="$(SolutionDir)project.props" Condition="exists('$(SolutionDir)project.props')" Label="ProjectSpecific (solution)" />]])
-                orig_p(indent+1, [[<Import Project="$(ProjectDir)project.props" Condition="exists('$(ProjectDir)project.props') AND '$(SolutionDir)' != '$(ProjectDir)'" Label="Project-specific (local)" />]])
+                orig_p(indent+1, [[<Import Project="$(SolutionDir)project.early.props" Condition="exists('$(SolutionDir)project.early.props')" Label="ProjectSpecific (solution/early)" />]])
+                orig_p(indent+1, [[<Import Project="$(ProjectDir)project.early.props" Condition="exists('$(ProjectDir)project.early.props') AND '$(SolutionDir)' != '$(ProjectDir)'" Label="Project-specific (local/early)" />]])
+                return true
+            end
+            if msg == [[<ItemGroup>]] and oldpreviousmsg == [[</ItemDefinitionGroup>]] then
+                orig_p(indent, [[<ImportGroup Label="PropertySheets">]])
+                orig_p(indent+1, [[<Import Project="$(SolutionDir)project.late.props" Condition="exists('$(SolutionDir)project.late.props')" Label="ProjectSpecific (solution/late)" />]])
+                orig_p(indent+1, [[<Import Project="$(ProjectDir)project.late.props" Condition="exists('$(ProjectDir)project.late.props') AND '$(SolutionDir)' != '$(ProjectDir)'" Label="Project-specific (local/late)" />]])
+                orig_p(indent, [[</ImportGroup>]])
+                orig_p(indent, msg, first, ...) -- pass through original line
+                return true
+        end
+            if msg == [[<ImportGroup Label="ExtensionTargets">]] then
+                orig_p(indent, [[<ImportGroup Label="PropertySheets">]])
+                orig_p(indent+1, [[<Import Project="$(SolutionDir)project.targets" Condition="exists('$(SolutionDir)project.targets')" Label="ProjectSpecific (solution/targets)" />]])
+                orig_p(indent+1, [[<Import Project="$(ProjectDir)project.targets" Condition="exists('$(ProjectDir)project.targets') AND '$(SolutionDir)' != '$(ProjectDir)'" Label="Project-specific (local/targets)" />]])
+                orig_p(indent, [[</ImportGroup>]])
+            orig_p(indent, msg, first, ...) -- pass through original line
                 return true
             end
         end
@@ -108,45 +115,11 @@ do
             orig_p(indent, '<ProjectName>%s</ProjectName>', prj.name)
             return true
         end
-        if (indent == 2) and (msg == [[<ClCompile Include="%s">]]) and (first == "setarg.cpp") then
-            local toadd = "<ExcludedFromBuild>true</ExcludedFromBuild>"
-            orig_p(indent, msg, first, ...) -- pass through original line
-            inject_linkopt_files(orig_p, toadd, indent, msg, first, ...)
-            orig_p(indent+1, toadd) -- Exclusion for the last item, too
-            return true
-        end
         if (indent == 2) and (suppress_tags2[msg] ~= nil) then -- Suppress these, our property sheet takes care of those
             return true
         end
         if (indent == 3) and (suppress_tags3[msg] ~= nil) then -- Suppress these, our property sheet takes care of those
             return true
-        end
-    end
-
-    -- We also want to inject some files into the filters
-    local orig_vc2010_filefiltergroup = premake.vstudio.vc2010.filefiltergroup
-    premake.vstudio.vc2010.filefiltergroup = function(prj, section)
-        if section == 'ClCompile' then
-            local orig_p = _G._p
-            -- We patch the global _p() function
-            _G._p = function(indent, msg, first, ...)
-                local arg = {...};
-                local second = arg[1]
-                -- and (second == "setarg.cpp") 
-                if (indent == 2) and (msg == [[<%s Include="%s">]]) and (first == section) and (second == "setarg.cpp") then
-                    local toadd = "<Filter>Source Files</Filter>"
-                    orig_p(indent, msg, first, ...) -- pass through original line
-                    orig_p(indent+1, toadd) -- Filter for the original file, too
-                    inject_linkopt_files(orig_p, toadd, indent, msg, first, ...)
-                    return true
-                end
-                orig_p(indent, msg, first, ...)
-            end
-            orig_vc2010_filefiltergroup(prj, section)
-            _G._p = orig_p -- restore in any case
-        else
-            -- No monkey-patching needed
-            orig_vc2010_filefiltergroup(prj, section)
         end
     end
 end
@@ -249,8 +222,8 @@ do
     premake.project.getbasename = function(prjname, pattern)
         -- The below is used to insert the .vs(8|9|10|11|12|14|15|16|17) into the file names for projects and solutions
         if _ACTION then
-            name_map = nil -- {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15", vs2019 = "vs16", vs2022 = "vs17"}
-            if name_map and name_map[_ACTION] then
+            name_map = {vs2005 = "vs8", vs2008 = "vs9", vs2010 = "vs10", vs2012 = "vs11", vs2013 = "vs12", vs2015 = "vs14", vs2017 = "vs15", vs2019 = "vs16", vs2022 = "vs17"}
+            if name_map[_ACTION] then
                 pattern = pattern:gsub("%%%%", "%%%%." .. name_map[_ACTION])
             else
                 pattern = pattern:gsub("%%%%", "%%%%." .. _ACTION)

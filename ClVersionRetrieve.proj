@@ -35,6 +35,7 @@
 		<ClCompile Include="NonExistent.cpp" />
 	</ItemGroup>
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+	<Target Name="Clean" />
 	<Target Name="ClVersionRetrieve" BeforeTargets="ClCompile" DependsOnTargets="SelectClCompile">
 		<!-- NB: below we join stderr into stdout, such that we have a deterministic ordering of output lines! -->
 		<Exec Command="&quot;$(ClCompilerPath)&quot; 2&gt;&amp;1 | findstr /b /l &quot;Microsoft (R) C/C++ Optimizing Compiler Version&quot;" IgnoreExitCode="true" EchoOff="true" ConsoleToMsBuild="true">
