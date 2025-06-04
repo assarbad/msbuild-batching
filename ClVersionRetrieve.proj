@@ -36,21 +36,155 @@
 	</ItemGroup>
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 	<Target Name="Clean" />
-	<Target Name="ClVersionRetrieve" BeforeTargets="ClCompile" DependsOnTargets="SelectClCompile">
-		<!-- NB: below we join stderr into stdout, such that we have a deterministic ordering of output lines! -->
-		<Exec Command="&quot;$(ClCompilerPath)&quot; 2&gt;&amp;1 | findstr /b /l &quot;Microsoft (R) C/C++ Optimizing Compiler Version&quot;" IgnoreExitCode="true" EchoOff="true" ConsoleToMsBuild="true">
-			<Output TaskParameter="ConsoleOutput" PropertyName="ClCompilerVersionLine" />
-		</Exec>
+	<Target Name="ClVersionRetrieve" BeforeTargets="ClCompile" DependsOnTargets="SelectClCompile" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+		<!-- Get a random .c file name inside IntDir -->
 		<PropertyGroup>
-			<ClCompilerVersion Condition="'$(ClCompilerVersionLine)' != ''">$([System.Text.RegularExpressions.Regex]::Replace('$(ClCompilerVersionLine)', '^Microsoft.+?[Cc]ompiler [Vv]ersion (\d+(?:\.\d+)+).*', '%241'))</ClCompilerVersion>
+			<RandomMockClCompile>$(IntDir)ClVersionRetrieve_$([System.IO.Path]::GetRandomFileName()).c</RandomMockClCompile>
 		</PropertyGroup>
-		<Message Importance="high" Text="%24(ClCompilerPath) = '$(ClCompilerPath)'" />
-		<Message Importance="high" Text="%24(ClCompilerVersionLine) = '$(ClCompilerVersionLine)'" />
-		<Message Importance="high" Text="%24(ClCompilerVersion) = '$(ClCompilerVersion)'" />
-		<Message Importance="high" Text="%24(MSBuildFileVersion) = '$(MSBuildFileVersion)'" />
-		<Message Importance="high" Text="%24(MSBuildSemanticVersion) = '$(MSBuildSemanticVersion)'" />
-		<Message Importance="high" Text="%24(MSBuildVersion) = '$(MSBuildVersion)'" />
-		<Message Importance="high" Text="%24(MSBuildToolsVersion) = '$(MSBuildToolsVersion)'" />
+		<!-- Create an item group independently of ClCompile  -->
+		<ItemGroup>
+			<MockClCompile Include="$(RandomMockClCompile)" />
+		</ItemGroup>
+		<!-- Create the .c file as an empty file -->
+		<WriteLinesToFile
+			File="$(RandomMockClCompile)"
+			Overwrite="true" />
+		<Message Importance="high" Text="Attempting to resolve path to compiler executable" />
+		<!-- Invoke the CL task which normally runs inside the ClCompile target and let it figure out the compiler executable path -->
+		<CL
+				Sources                            ="@(MockClCompile)"
+				AdditionalOptions                  ="/nologo"
+				ToolExe                            ="$(CLToolExe)"
+				ToolPath                           ="$(CLToolPath)"
+				ToolArchitecture                   ="$(CLToolArchitecture)"
+			>
+			<!-- read the resolved path into our property _ClVersionRetrieve_VC_CL_ResolvedPathToTool -->
+			<Output TaskParameter="ResolvedPathToTool"  PropertyName="_ClVersionRetrieve_VC_CL_ResolvedPathToTool" />
+		</CL>
+		<!-- Same error the real ClCompile target would issue when unable to resolve the path -->
+		<VCMessage Code="MSB8057" Type="Error"  Condition="'$(_ExecutablePathWasCustomized)'=='false' AND '$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool)'=='$(CLToolExe)'" />
+		<Message Importance="low" Text="%24(_ClVersionRetrieve_VC_CL_ResolvedPathToTool) = '$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool)'" />
+		<PropertyGroup>
+			<_ClVersionRetrieve_IsClang>$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool.ToLower().EndsWith('\clang-cl.exe'))</_ClVersionRetrieve_IsClang>
+			<_ClVersionRetrieve_IsMSVC>$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool.ToLower().EndsWith('\cl.exe'))</_ClVersionRetrieve_IsMSVC>
+		</PropertyGroup>
+		<Message Importance="low" Text="%24(_ClVersionRetrieve_IsClang) = '$(_ClVersionRetrieve_IsClang)'" />
+		<Message Importance="low" Text="%24(_ClVersionRetrieve_IsMSVC) = '$(_ClVersionRetrieve_IsMSVC)'" />
+		<!-- We now execute cl.exe /? and make sure that both stdin and stderr are piped so that we get no prompts -->
+		<!-- NB: below we join stderr into stdout, such that we have a deterministic ordering of output lines! -->
+		<Exec Condition="$(_ClVersionRetrieve_IsMSVC)" Command="&quot;$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool)&quot; /Bv /Zc:preprocessor /PD /c &quot;$(RandomMockClCompile)&quot; 2&gt;&amp;1 &lt; NUL" IgnoreExitCode="true" EchoOff="true" ConsoleToMsBuild="true" IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="low">
+			<Output TaskParameter="ConsoleOutput" PropertyName="ClVersionRetrieveCompilerVersionOutput" /><!-- a string with lines separated by semi-colon -->
+		</Exec>
+		<Exec Condition="$(_ClVersionRetrieve_IsClang)" Command="&quot;$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool)&quot; --version &amp;&amp; &quot;$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool)&quot; -print-effective-triple &amp;&amp; &quot;$(_ClVersionRetrieve_VC_CL_ResolvedPathToTool)&quot; -Xclang -dM -E -x c - 2&gt;&amp;1 &lt; NUL" IgnoreExitCode="true" EchoOff="true" ConsoleToMsBuild="true" IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="low">
+			<Output TaskParameter="ConsoleOutput" PropertyName="ClVersionRetrieveCompilerVersionOutput" /><!-- a string with lines separated by semi-colon -->
+		</Exec>
+		<!-- Extract the first line using MSBuild string functions -->
+		<PropertyGroup>
+			<!-- example 'Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35207.1 for x64' -->
+			<ClVersionRetrieveCompilerVersionLine>$(ClVersionRetrieveCompilerVersionOutput.Split(';')[0])</ClVersionRetrieveCompilerVersionLine>
+		</PropertyGroup>
+		<PropertyGroup Condition="$(ClVersionRetrieveCompilerVersionLine.Contains('Microsoft'))">
+			<!-- extract version value from ClCompilerVersionLine -->
+			<!-- example: '19.44.35207.1' -->
+			<ClVersionRetrieveCompilerVersion>$([System.Text.RegularExpressions.Regex]::Replace('$(ClVersionRetrieveCompilerVersionLine)', '^Microsoft.+?[Cc]ompiler [Vv]ersion (\d+(?:\.\d+)+).*', '%241'))</ClVersionRetrieveCompilerVersion>
+			<ClVersionRetrieveToolsetVersion Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(ClVersionRetrieveCompilerVersionOutput)', 'VC\\Tools\\MSVC\\(\d+?.\d+?.\d+?)\\bin\\Host[^\\]+?\\[^\\]+?\\link.exe:\s+?Version\s+?(\d+?\.\d+?\.\d+?\.\d+?)'))">$([System.Text.RegularExpressions.Regex]::Match('$(ClVersionRetrieveCompilerVersionOutput)', 'VC\\Tools\\MSVC\\(\d+?.\d+?.\d+?)\\bin\\Host[^\\]+?\\[^\\]+?\\link.exe:\s+?Version\s+?(\d+?\.\d+?\.\d+?\.\d+?)').Groups[1].Value)</ClVersionRetrieveToolsetVersion>
+			<ClVersionRetrieveLinkExeVersion Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(ClVersionRetrieveCompilerVersionOutput)', 'VC\\Tools\\MSVC\\(\d+?.\d+?.\d+?)\\bin\\Host[^\\]+?\\[^\\]+?\\link.exe:\s+?Version\s+?(\d+?\.\d+?\.\d+?\.\d+?)'))">$([System.Text.RegularExpressions.Regex]::Match('$(ClVersionRetrieveCompilerVersionOutput)', 'VC\\Tools\\MSVC\\(\d+?.\d+?.\d+?)\\bin\\Host[^\\]+?\\[^\\]+?\\link.exe:\s+?Version\s+?(\d+?\.\d+?\.\d+?\.\d+?)').Groups[2].Value)</ClVersionRetrieveLinkExeVersion>
+			<ClVersionRetrieveClExeVersion Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(ClVersionRetrieveCompilerVersionOutput)', 'VC\\Tools\\MSVC\\(\d+?.\d+?.\d+?)\\bin\\Host[^\\]+?\\[^\\]+?\\cl.exe:\s+?Version\s+?(\d+?\.\d+?\.\d+?\.\d+?)'))">$([System.Text.RegularExpressions.Regex]::Match('$(ClVersionRetrieveCompilerVersionOutput)', 'VC\\Tools\\MSVC\\(\d+?.\d+?.\d+?)\\bin\\Host[^\\]+?\\[^\\]+?\\cl.exe:\s+?Version\s+?(\d+?\.\d+?\.\d+?\.\d+?)').Groups[2].Value)</ClVersionRetrieveClExeVersion>
+		</PropertyGroup>
+		<PropertyGroup Condition="$(ClVersionRetrieveCompilerVersionLine.Contains('clang'))">
+			<!-- extract version value from ClCompilerVersionLine -->
+			<!-- example: '20.1.5' (actual Clang version) -->
+			<ClVersionRetrieveCompilerVersion>$([System.Text.RegularExpressions.Regex]::Replace('$(ClVersionRetrieveCompilerVersionLine)', '^clang version (\d+(?:\.\d+)+).*', '%241'))</ClVersionRetrieveCompilerVersion>
+		</PropertyGroup>
+		<PropertyGroup>
+			<!-- example: '194435207' (VVRRPPPPP) -->
+			<_MSC_FULL_VERINT Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('$(ClVersionRetrieveCompilerVersionOutput)', '#\s*?define\s+?_MSC_FULL_VER\s+?(\d+);'))">$([System.Text.RegularExpressions.Regex]::Match('$(ClVersionRetrieveCompilerVersionOutput)', '#\s*?define\s+?_MSC_FULL_VER\s+?(\d+);').Groups[1].Value)</_MSC_FULL_VERINT>
+			<!-- example: '1944' (VVRR) -->
+			<_MSC_VERINT>$([MSBuild]::Divide($(_MSC_FULL_VERINT), 100000))</_MSC_VERINT>
+			<!-- example: '19' (VV) -->
+			<_MSC_MAJOR_VERINT>$([MSBuild]::Divide($(_MSC_VERINT), 100))</_MSC_MAJOR_VERINT>
+			<!-- example: '44' (RR) -->
+			<_MSC_MINOR_VERINT>$([MSBuild]::Modulo($(_MSC_VERINT), 100))</_MSC_MINOR_VERINT>
+			<!-- example: '35207' (PPPPP) -->
+			<_MSC_PATCH_VERINT>$([MSBuild]::Modulo($(_MSC_FULL_VERINT), 100000))</_MSC_PATCH_VERINT>
+			<!-- example: '19.44.35207' (VV.RR.PPPPP) -->
+			<_MSC_FULL_VERSTR>$(_MSC_MAJOR_VERINT).$(_MSC_MINOR_VERINT).$(_MSC_PATCH_VERINT)</_MSC_FULL_VERSTR>
+		</PropertyGroup>
+		<!-- "assertions" -->
+		<!-- _MSC_FULL_VERINT was retrieved and is an integer -->
+		<Error Condition="'$(_MSC_FULL_VERINT)' == ''"
+			   Text="Fatal ClVersionRetrieve error: _MSC_FULL_VERINT was not retrieved" />
+		<Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(_MSC_FULL_VERINT)', '^\d+%24'))"
+			   Text="Fatal ClVersionRetrieve error: _MSC_FULL_VERINT ($(_MSC_FULL_VERINT)) was not a decimal integer" />
+		<!-- _MSC_VERINT was retrieved and is an integer -->
+		<Error Condition="'$(_MSC_VERINT)' == ''"
+			   Text="Fatal ClVersionRetrieve error: _MSC_VERINT was not retrieved" />
+		<Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(_MSC_VERINT)', '^\d+%24'))"
+			   Text="Fatal ClVersionRetrieve error: _MSC_VERINT ($(_MSC_VERINT)) was not a decimal integer" />
+		<!-- _MSC_FULL_VERSTR matches $(_MSC_MAJOR_VERINT).$(_MSC_MINOR_VERINT).$(_MSC_PATCH_VERINT) -->
+		<Error Condition="'$(_MSC_FULL_VERSTR)' != '$(_MSC_MAJOR_VERINT).$(_MSC_MINOR_VERINT).$(_MSC_PATCH_VERINT)'"
+			   Text="Fatal ClVersionRetrieve error: _MSC_FULL_VERSTR ($(_MSC_FULL_VERSTR)) isn't VV.RR.PPPPP ($(_MSC_MAJOR_VERINT).$(_MSC_MINOR_VERINT).$(_MSC_PATCH_VERINT))" />
+		<!-- _MSC_MAJOR_VERINT and _MSC_MINOR_VERINT and _MSC_PATCH_VERINT were retrieved and are integers -->
+		<Error Condition="'$(_MSC_MAJOR_VERINT)' == '' or '$(_MSC_MINOR_VERINT)' == '' or '$(_MSC_PATCH_VERINT)' == ''"
+			   Text="Fatal ClVersionRetrieve error: _MSC_MAJOR_VERINT or _MSC_MINOR_VERINT or _MSC_PATCH_VERINT was not retrieved" />
+		<Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(_MSC_MAJOR_VERINT)', '^\d+%24'))"
+			   Text="Fatal ClVersionRetrieve error: _MSC_MAJOR_VERINT ($(_MSC_MAJOR_VERINT)) was not a decimal integer" />
+		<Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(_MSC_MINOR_VERINT)', '^\d+%24'))"
+			   Text="Fatal ClVersionRetrieve error: _MSC_MINOR_VERINT ($(_MSC_MINOR_VERINT)) was not a decimal integer" />
+		<Error Condition="!$([System.Text.RegularExpressions.Regex]::IsMatch('$(_MSC_PATCH_VERINT)', '^\d+%24'))"
+			   Text="Fatal ClVersionRetrieve error: _MSC_PATCH_VERINT ($(_MSC_PATCH_VERINT)) was not a decimal integer" />
+		<!-- ClVersionRetrieveLinkExeVersion starts with ClVersionRetrieveToolsetVersion; only if both are not empty -->
+		<Error Condition="'$(ClVersionRetrieveLinkExeVersion)' != '' and '$(ClVersionRetrieveToolsetVersion)' != '' and !$(ClVersionRetrieveLinkExeVersion.StartsWith(`$(ClVersionRetrieveToolsetVersion)`))"
+			   Text="Fatal ClVersionRetrieve error: ClVersionRetrieveLinkExeVersion ($(ClVersionRetrieveLinkExeVersion)) should start with ClVersionRetrieveToolsetVersion ($(ClVersionRetrieveToolsetVersion))" />
+		<!-- ClVersionRetrieveClExeVersion starts with _MSC_FULL_VERSTR; only if both are not empty -->
+		<Error Condition="'$(_MSC_FULL_VERSTR)' != '' and '$(ClVersionRetrieveClExeVersion)' != '' and !$(ClVersionRetrieveClExeVersion.StartsWith(`$(_MSC_FULL_VERSTR)`))"
+			   Text="Fatal ClVersionRetrieve error: ClVersionRetrieveClExeVersion ($(ClVersionRetrieveClExeVersion)) should start with _MSC_FULL_VERSTR ($(_MSC_FULL_VERSTR))" />
+		<!-- Only MSVC: ClVersionRetrieveCompilerVersion starts with _MSC_FULL_VERSTR; only if both are not empty -->
+		<Error Condition="$(_ClVersionRetrieve_IsMSVC) and '$(_MSC_FULL_VERSTR)' != '' and '$(ClVersionRetrieveCompilerVersion)' != '' and !$(ClVersionRetrieveCompilerVersion.StartsWith(`$(_MSC_FULL_VERSTR)`))"
+			   Text="Fatal ClVersionRetrieve error: ClVersionRetrieveCompilerVersion ($(ClVersionRetrieveCompilerVersion)) should start with _MSC_FULL_VERSTR ($(_MSC_FULL_VERSTR))" />
+		<!-- ClVersionRetrieveClExeVersion is identical to ClVersionRetrieveCompilerVersion; only if both are not empty -->
+		<Error Condition="'$(ClVersionRetrieveClExeVersion)' != '' and '$(ClVersionRetrieveCompilerVersion)' != '' and '$(ClVersionRetrieveClExeVersion)' != '$(ClVersionRetrieveCompilerVersion)'"
+			   Text="Fatal ClVersionRetrieve error: ClVersionRetrieveClExeVersion ($(ClVersionRetrieveClExeVersion)) should match ClVersionRetrieveCompilerVersion ($(ClVersionRetrieveCompilerVersion))" />
+		<!-- Output our findings -->
+		<Message Importance="low" Text="%24(ClVersionRetrieveCompilerVersionOutput) = '$(ClVersionRetrieveCompilerVersionOutput)'" />
+		<Message Importance="high" Text="%24(ClVersionRetrieveCompilerVersionLine) = '$(ClVersionRetrieveCompilerVersionLine)'" />
+		<Message Importance="high" Text="%24(ClVersionRetrieveCompilerVersion) = '$(ClVersionRetrieveCompilerVersion)'" />
+		<Message Importance="high" Text="%24(_MSC_FULL_VERINT) = '$(_MSC_FULL_VERINT)'" />
+		<Message Importance="high" Text="%24(_MSC_MAJOR_VERINT) = '$(_MSC_MAJOR_VERINT)'" />
+		<Message Importance="high" Text="%24(_MSC_MINOR_VERINT) = '$(_MSC_MINOR_VERINT)'" />
+		<Message Importance="high" Text="%24(_MSC_PATCH_VERINT) = '$(_MSC_PATCH_VERINT)'" />
+		<Message Importance="high" Text="%24(_MSC_FULL_VERSTR) = '$(_MSC_FULL_VERSTR)'" />
+		<Message Importance="high" Text="%24(ClVersionRetrieveToolsetVersion) = '$(ClVersionRetrieveToolsetVersion)'" Condition="'$(ClVersionRetrieveToolsetVersion)' != ''" />
+		<Message Importance="high" Text="%24(ClVersionRetrieveLinkExeVersion) = '$(ClVersionRetrieveLinkExeVersion)'" Condition="'$(ClVersionRetrieveLinkExeVersion)' != ''" />
+		<Message Importance="high" Text="%24(ClVersionRetrieveClExeVersion) = '$(ClVersionRetrieveClExeVersion)'" Condition="'$(ClVersionRetrieveClExeVersion)' != ''" />
+		<Message Importance="low" Text="%24(MSBuildFileVersion) = '$(MSBuildFileVersion)'" />
+		<Message Importance="low" Text="%24(MSBuildSemanticVersion) = '$(MSBuildSemanticVersion)'" />
+		<Message Importance="low" Text="%24(MSBuildVersion) = '$(MSBuildVersion)'" />
+		<Message Importance="low" Text="%24(MSBuildToolsVersion) = '$(MSBuildToolsVersion)'" />
 		<!-- At this point we could write the results into a file, e.g. an MSBuild snippet -->
+		<PropertyGroup>
+			<ClVersionRetrievePreprocessorDefinitions>_MSC_MAJOR_VERINT=$(_MSC_MAJOR_VERINT);_MSC_MINOR_VERINT=$(_MSC_MINOR_VERINT);_MSC_PATCH_VERINT=$(_MSC_PATCH_VERINT);_MSC_FULL_VERSTR=$(_MSC_FULL_VERSTR)</ClVersionRetrievePreprocessorDefinitions>
+			<ClVersionRetrievePreprocessorDefinitions Condition="'$(ClVersionRetrieveToolsetVersion)' != ''">$(ClVersionRetrievePreprocessorDefinitions);_MSC_TOOLSET_VERSTR=$(ClVersionRetrieveToolsetVersion)</ClVersionRetrievePreprocessorDefinitions>
+		</PropertyGroup>
+		<!-- Rewrite the .c file to validate our preprocessor defines -->
+		<WriteLinesToFile
+			File="$(RandomMockClCompile)"
+			Lines="#if _MSC_FULL_VER != ((_MSC_MAJOR_VERINT * 10000000) + (_MSC_MINOR_VERINT * 100000) + _MSC_PATCH_VERINT)&#13;&#10;#   error &quot;mismatch between _MSC_FULL_VER and _MSC_{MAJOR,MINOR,PATCH}_VERINT&quot;&#13;&#10;#endif"
+			Overwrite="true" />
+		<CL
+				Sources                            ="@(MockClCompile)"
+				AdditionalOptions                  ="/nologo"
+				PreprocessorDefinitions            ="%(ClCompile.PreprocessorDefinitions);$(ClVersionRetrievePreprocessorDefinitions)"
+				ToolExe                            ="$(CLToolExe)"
+				ToolPath                           ="$(CLToolPath)"
+				ToolArchitecture                   ="$(CLToolArchitecture)"
+		/>
+		<Delete Files="$(RandomMockClCompile)" />
+		<ItemGroup>
+			<ClCompile>
+				<!-- For all ClCompile items append the respective preprocessor defines -->
+				<PreprocessorDefinitions>%(PreprocessorDefinitions);$(ClVersionRetrievePreprocessorDefinitions)</PreprocessorDefinitions>
+			</ClCompile>
+		</ItemGroup>
 	</Target>
 </Project>
