@@ -4,4 +4,4 @@ Batching in MSBuild essentially exploits the feature of `cl.exe` to take an arbi
 
 ## Furthermore ...
 
-This also includes test projects that I use to dabble with MSBuild in order to retrieve circumstantial information during a build.
+This also includes test projects that I use to dabble with MSBuild in order to retrieve circumstantial information during a build (e.g. the compiler version: [`ClVersionRetrieve.targets`](ClVersionRetrieve.targets)).
