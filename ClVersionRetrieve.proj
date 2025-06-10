@@ -36,16 +36,22 @@
 	</ItemGroup>
 	<Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 	<Target Name="Clean" />
-	<Target Name="ClVersionRetrieve" BeforeTargets="ClCompile" DependsOnTargets="SelectClCompile" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
-		<!-- Get a random .c file name inside IntDir -->
+	<!--
+		NB: if you were to import a ClVersionRetrieve.targets file instead of mocking a full .vcxproj, you'd remove the `true OR` from the condition of the
+			<Target /> below and use that target as the only content of the .targets file.
+			Due to BeforeTargets and DependsOnTargets there is no need to populate the DefaultTargets of the <Project /> in such a scenario.
+		PS: this was tested with clang-cl.exe and with cl.exe as C compiler (initially) as well as C++ and C++/CLI compiler.
+	-->
+	<Target Name="ClVersionRetrieve" BeforeTargets="ClCompile" DependsOnTargets="SelectClCompile" Condition="true OR '$(MSBuildProjectExtension)' == '.vcxproj'">
+		<!-- Get a random .cpp file name inside IntDir -->
 		<PropertyGroup>
-			<RandomMockClCompile>$(IntDir)ClVersionRetrieve_$([System.IO.Path]::GetRandomFileName()).c</RandomMockClCompile>
+			<RandomMockClCompile>$(IntDir)ClVersionRetrieve_$([System.IO.Path]::GetRandomFileName()).cpp</RandomMockClCompile>
 		</PropertyGroup>
 		<!-- Create an item group independently of ClCompile  -->
 		<ItemGroup>
 			<MockClCompile Include="$(RandomMockClCompile)" />
 		</ItemGroup>
-		<!-- Create the .c file as an empty file -->
+		<!-- Create the .cpp file as an empty file -->
 		<WriteLinesToFile
 			File="$(RandomMockClCompile)"
 			Overwrite="true" />
@@ -54,6 +60,8 @@
 		<CL
 				Sources                            ="@(MockClCompile)"
 				AdditionalOptions                  ="/nologo"
+				CompileAsManaged                   ="$(ManagedAssembly)"
+				ObjectFileName                     ="@(MockClCompile->'%(Identity).obj')"
 				ToolExe                            ="$(CLToolExe)"
 				ToolPath                           ="$(CLToolPath)"
 				ToolArchitecture                   ="$(CLToolArchitecture)"
@@ -147,26 +155,17 @@
 			   Text="Fatal ClVersionRetrieve error: ClVersionRetrieveClExeVersion ($(ClVersionRetrieveClExeVersion)) should match ClVersionRetrieveCompilerVersion ($(ClVersionRetrieveCompilerVersion))" />
 		<!-- Output our findings -->
 		<Message Importance="low" Text="%24(ClVersionRetrieveCompilerVersionOutput) = '$(ClVersionRetrieveCompilerVersionOutput)'" />
-		<Message Importance="high" Text="%24(ClVersionRetrieveCompilerVersionLine) = '$(ClVersionRetrieveCompilerVersionLine)'" />
-		<Message Importance="high" Text="%24(ClVersionRetrieveCompilerVersion) = '$(ClVersionRetrieveCompilerVersion)'" />
-		<Message Importance="high" Text="%24(_MSC_FULL_VERINT) = '$(_MSC_FULL_VERINT)'" />
-		<Message Importance="high" Text="%24(_MSC_MAJOR_VERINT) = '$(_MSC_MAJOR_VERINT)'" />
-		<Message Importance="high" Text="%24(_MSC_MINOR_VERINT) = '$(_MSC_MINOR_VERINT)'" />
-		<Message Importance="high" Text="%24(_MSC_PATCH_VERINT) = '$(_MSC_PATCH_VERINT)'" />
-		<Message Importance="high" Text="%24(_MSC_FULL_VERSTR) = '$(_MSC_FULL_VERSTR)'" />
-		<Message Importance="high" Text="%24(ClVersionRetrieveToolsetVersion) = '$(ClVersionRetrieveToolsetVersion)'" Condition="'$(ClVersionRetrieveToolsetVersion)' != ''" />
-		<Message Importance="high" Text="%24(ClVersionRetrieveLinkExeVersion) = '$(ClVersionRetrieveLinkExeVersion)'" Condition="'$(ClVersionRetrieveLinkExeVersion)' != ''" />
-		<Message Importance="high" Text="%24(ClVersionRetrieveClExeVersion) = '$(ClVersionRetrieveClExeVersion)'" Condition="'$(ClVersionRetrieveClExeVersion)' != ''" />
-		<Message Importance="low" Text="%24(MSBuildFileVersion) = '$(MSBuildFileVersion)'" />
-		<Message Importance="low" Text="%24(MSBuildSemanticVersion) = '$(MSBuildSemanticVersion)'" />
-		<Message Importance="low" Text="%24(MSBuildVersion) = '$(MSBuildVersion)'" />
-		<Message Importance="low" Text="%24(MSBuildToolsVersion) = '$(MSBuildToolsVersion)'" />
-		<!-- At this point we could write the results into a file, e.g. an MSBuild snippet -->
+		<Message Importance="low" Text="%24(ClVersionRetrieveCompilerVersionLine) = '$(ClVersionRetrieveCompilerVersionLine)'" />
+		<Message Importance="high" Text="%24(ClVersionRetrieveCompilerVersion) = '$(ClVersionRetrieveCompilerVersion)'; %24(_MSC_MAJOR_VERINT) = '$(_MSC_MAJOR_VERINT)'; %24(_MSC_MINOR_VERINT) = '$(_MSC_MINOR_VERINT)'; %24(_MSC_PATCH_VERINT) = '$(_MSC_PATCH_VERINT)'; %24(_MSC_FULL_VERSTR) = '$(_MSC_FULL_VERSTR)'" />
+		<Message Importance="normal" Text="%24(_MSC_FULL_VERINT) = '$(_MSC_FULL_VERINT)'" />
+		<Message Importance="normal" Text="%24(ClVersionRetrieveToolsetVersion) = '$(ClVersionRetrieveToolsetVersion)'" Condition="'$(ClVersionRetrieveToolsetVersion)' != ''" />
+		<Message Importance="normal" Text="%24(ClVersionRetrieveLinkExeVersion) = '$(ClVersionRetrieveLinkExeVersion)'" Condition="'$(ClVersionRetrieveLinkExeVersion)' != ''" />
+		<Message Importance="normal" Text="%24(ClVersionRetrieveClExeVersion) = '$(ClVersionRetrieveClExeVersion)'" Condition="'$(ClVersionRetrieveClExeVersion)' != ''" />
 		<PropertyGroup>
 			<ClVersionRetrievePreprocessorDefinitions>_MSC_MAJOR_VERINT=$(_MSC_MAJOR_VERINT);_MSC_MINOR_VERINT=$(_MSC_MINOR_VERINT);_MSC_PATCH_VERINT=$(_MSC_PATCH_VERINT);_MSC_FULL_VERSTR=$(_MSC_FULL_VERSTR)</ClVersionRetrievePreprocessorDefinitions>
 			<ClVersionRetrievePreprocessorDefinitions Condition="'$(ClVersionRetrieveToolsetVersion)' != ''">$(ClVersionRetrievePreprocessorDefinitions);_MSC_TOOLSET_VERSTR=$(ClVersionRetrieveToolsetVersion)</ClVersionRetrievePreprocessorDefinitions>
 		</PropertyGroup>
-		<!-- Rewrite the .c file to validate our preprocessor defines -->
+		<!-- Rewrite the .cpp file to validate our preprocessor defines -->
 		<WriteLinesToFile
 			File="$(RandomMockClCompile)"
 			Lines="#if _MSC_FULL_VER != ((_MSC_MAJOR_VERINT * 10000000) + (_MSC_MINOR_VERINT * 100000) + _MSC_PATCH_VERINT)&#13;&#10;#   error &quot;mismatch between _MSC_FULL_VER and _MSC_{MAJOR,MINOR,PATCH}_VERINT&quot;&#13;&#10;#endif"
@@ -174,17 +173,26 @@
 		<CL
 				Sources                            ="@(MockClCompile)"
 				AdditionalOptions                  ="/nologo"
+				CompileAsManaged                   ="$(ManagedAssembly)"
+				ObjectFileName                     ="@(MockClCompile->'%(Identity).obj')"
 				PreprocessorDefinitions            ="%(ClCompile.PreprocessorDefinitions);$(ClVersionRetrievePreprocessorDefinitions)"
 				ToolExe                            ="$(CLToolExe)"
 				ToolPath                           ="$(CLToolPath)"
 				ToolArchitecture                   ="$(CLToolArchitecture)"
 		/>
-		<Delete Files="$(RandomMockClCompile)" />
+		<!-- Clean up after ourselves -->
+		<Delete Files="@(MockClCompile->'%(Identity).obj');@(MockClCompile->'%(Identity)')" />
 		<ItemGroup>
 			<ClCompile>
 				<!-- For all ClCompile items append the respective preprocessor defines -->
 				<PreprocessorDefinitions>%(PreprocessorDefinitions);$(ClVersionRetrievePreprocessorDefinitions)</PreprocessorDefinitions>
 			</ClCompile>
 		</ItemGroup>
+		<PropertyGroup><!-- remove the properties that needn't be visible outside of here -->
+			<ClVersionRetrieveCompilerVersionOutput />
+			<ClVersionRetrievePreprocessorDefinitions />
+			<RandomMockClCompile />
+			<_ClVersionRetrieve_VC_CL_ResolvedPathToTool />
+		</PropertyGroup>
 	</Target>
 </Project>
